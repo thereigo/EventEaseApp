@@ -1,14 +1,14 @@
 ﻿@page "/register/{eventName}"
 @using EventEaseApp.Data
 @using EventEaseApp.Models
-@using EventEaseApp.Logging 
+@using EventEaseApp.Logging
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 @inject ILoggingService LoggingService // Inject the logging service
 
 @code {
     [Parameter]
-    public string EventName { get; set; }
+    public string? EventName { get; set; }
 
     private EventModel eventDetails;
     private ParticipantModel participant = new ParticipantModel();

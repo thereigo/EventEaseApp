@@ -11,7 +11,7 @@ namespace EventEaseApp.Logging
             _logger = logger;
         }
 
-        public void LogException(Exception ex, string message = null)
+        public void LogException(Exception ex, string? message = null)
         {
             if (string.IsNullOrEmpty(message))
             {
