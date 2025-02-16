@@ -1,8 +1,8 @@
 ﻿@page "/events"
-@using EventEaseApp.Data
-@using EventEaseApp.Models
 @using EventEaseApp.Components
-@using EventEaseApp.Logging
+@using global::EventEaseApp.Data
+@using global::EventEaseApp.Logging
+@using global::EventEaseApp.Models
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 @inject ILoggingService LoggingService
@@ -11,10 +11,11 @@
     private int currentPage = 1;
     private int pageSize = 5;
     private int totalEvents;
-    private List<EventModel> paginatedEvents;
+    private List<EventModel>? paginatedEvents;
 
     protected override async Task OnInitializedAsync()
     {
+        await Task.Yield();
         try
         {
             if (MockData.Events != null)
@@ -75,17 +76,20 @@
     }
     else
     {
-        @foreach (var eventItem in paginatedEvents)
+        @if (paginatedEvents != null)
         {
-            <EventCard Event="eventItem" />
+            @foreach (var eventItem in paginatedEvents)
+            {
+                <EventCard Event="eventItem" />
+            }
         }
-
-        <div class="pagination">
-            <button @onclick="PreviousPage" disabled="@(currentPage == 1)">Previous</button>
-            <span>Page @currentPage</span>
-            <button @onclick="NextPage" disabled="@(currentPage* pageSize >= totalEvents)">Next</button>
-        </div>
     }
+
+    <div class="pagination">
+        <button @onclick="PreviousPage" disabled="@(currentPage == 1)">Previous</button>
+        <span>Page @currentPage</span>
+        <button @onclick="NextPage" disabled="@(currentPage* pageSize >= totalEvents)">Next</button>
+    </div>
 </div>
 
 <style>

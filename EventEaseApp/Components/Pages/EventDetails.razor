@@ -1,17 +1,17 @@
 ﻿@page "/events/{eventName}"
-@using EventEaseApp.Data
-@using EventEaseApp.Models
+@using global::EventEaseApp.Data
+@using global::EventEaseApp.Models
 @inject NavigationManager Navigation
 
 @code {
     [Parameter]
-    public string EventName { get; set; }
+    public string? EventName { get; set; }
 
-    private EventModel eventDetails;
+    private EventModel? eventDetails;
 
     protected override async Task OnInitializedAsync()
     {
-        eventDetails = MockData.Events.FirstOrDefault(e => e.Name == EventName);
+        eventDetails = await Task.Run(() => MockData.Events.FirstOrDefault(e => e.Name == EventName));
         if (eventDetails == null)
         {
             Navigation.NavigateTo("/not-found");

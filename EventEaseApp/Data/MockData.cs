@@ -51,8 +51,11 @@ namespace EventEaseApp.Data
             var random = new Random();
             foreach (var eventModel in Events)
             {
-                var participants = GenerateParticipants(random.Next(1, 20));
-                eventParticipants[eventModel.Name] = participants;
+                if (eventModel.Name != null)
+                {
+                    var participants = GenerateParticipants(random.Next(1, 20));
+                    eventParticipants[eventModel.Name] = participants;
+                }
             }
             return eventParticipants;
         }

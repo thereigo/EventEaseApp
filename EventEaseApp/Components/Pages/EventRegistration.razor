@@ -1,7 +1,7 @@
 ﻿@page "/register/{eventName}"
-@using EventEaseApp.Data
-@using EventEaseApp.Models
-@using EventEaseApp.Logging
+@using global::EventEaseApp.Data
+@using global::EventEaseApp.Logging
+@using global::EventEaseApp.Models
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 @inject ILoggingService LoggingService // Inject the logging service
@@ -10,32 +10,44 @@
     [Parameter]
     public string? EventName { get; set; }
 
-    private EventModel eventDetails;
+    private EventModel? eventDetails;
     private ParticipantModel participant = new ParticipantModel();
     private List<string> registeredParticipants = new List<string>();
 
     protected override async Task OnInitializedAsync()
     {
-        try
+        await Task.Run(() =>
         {
-            eventDetails = MockData.Events.FirstOrDefault(e => e.Name == EventName);
-            if (eventDetails == null)
+            try
             {
-                Navigation.NavigateTo("/not-found");
+                eventDetails = MockData.Events.FirstOrDefault(e => e.Name == EventName);
+                if (eventDetails == null)
+                {
+                    Navigation.NavigateTo("/not-found");
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(EventName) && MockData.EventParticipants.ContainsKey(EventName))
+                    {
+                        registeredParticipants = MockData.EventParticipants[EventName].Select(p => p.Name).Where(name => name !=
+                null).ToList()!;
+                    }
+                    else
+                    {
+                        registeredParticipants = new List<string>();
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                registeredParticipants = MockData.EventParticipants[EventName].Select(p => p.Name).ToList();
+                LoggingService.LogException(ex, "Error initializing EventRegistration component.");
             }
-        }
-        catch (Exception ex)
-        {
-            LoggingService.LogException(ex, "Error initializing EventRegistration component.");
-        }
+        });
     }
 
     private async Task Register()
     {
+        await Task.Yield();
         try
         {
             if (participant != null && !string.IsNullOrEmpty(participant.Name) &&

@@ -1,7 +1,4 @@
 using EventEaseApp.Data;
-using EventEaseApp.Models;
-using System.Linq;
-using Xunit;
 
 namespace EventEaseApp.Tests
 {
@@ -22,12 +19,25 @@ namespace EventEaseApp.Tests
                 {
                     // Simulate registration
                     var registeredParticipants = new List<string>();
-                    if (!registeredParticipants.Contains(participant.Name))
+                    if (participant.Name != null && !registeredParticipants.Contains(participant.Name))
                     {
                         registeredParticipants.Add(participant.Name);
                     }
                 }
             }
+        }
+
+        [Fact]
+        public void TestLargeData()
+        {
+            List<string> dataList = new List<string>();
+            for (int i = 0; i < 1000; i++)
+            {
+                dataList.Add("Item " + i);
+            }
+
+            Assert.Contains("Item 500", dataList);
+            Assert.DoesNotContain("NonExistent Item", dataList);
         }
     }
 }
