@@ -57,7 +57,7 @@ jobs:
 
     env:
       Solution_Name: EventEaseApp.sln                        
-      Test_Project_Path: tests/EventEaseApp.Tests/EventEaseApp.Tests.csproj
+      # Test_Project_Path: tests/EventEaseApp.Tests/EventEaseApp.Tests.csproj
       Wap_Project_Directory: src/EventEaseApp.Package
       Wap_Project_Path: src/EventEaseApp.Package/EventEaseApp.Package.wapproj
 
