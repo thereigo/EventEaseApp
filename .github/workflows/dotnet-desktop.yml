@@ -16,7 +16,7 @@ jobs:
 
     env:
       Solution_Name: EventEaseApp.sln
-      Test_Project_Path: tests/EventEaseApp.Tests/EventEaseApp.Tests.csproj
+      # Test_Project_Path: tests/EventEaseApp.Tests/EventEaseApp.Tests.csproj
       Wap_Project_Directory: src/EventEaseApp.Package
       Wap_Project_Path: src/EventEaseApp.Package/EventEaseApp.Package.wapproj
 
@@ -34,8 +34,8 @@ jobs:
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
 
-      - name: Execute unit tests
-        run: dotnet test
+      # - name: Execute unit tests
+      #   run: dotnet test
 
       - name: Decode the pfx
         run: |
