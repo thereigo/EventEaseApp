@@ -14,7 +14,7 @@ namespace EventEaseApp.Data
             var events = new List<EventModel>();
             var random = new Random();
             var locations = new[] { "New York", "Los Angeles", "Chicago", "Houston", "Phoenix" };
-            var eventNames = new[] { "Conference", "Workshop", "Seminar", "Meetup", "Webinar" };
+            var eventNames = new[] { "Tech Conference 2024", "Marketing Summit", "AI Expo", "Startup Weekend", "Design Workshop", "Global Leadership Summit", "FinTech Forum", "Healthcare Innovation Conference", "Renewable Energy Expo", "Cybersecurity Symposium" };
             for (int i = 1; i <= numberOfEvents; i++)
             {
                 events.Add(new EventModel
