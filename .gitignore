@@ -1,0 +1,56 @@
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+bin/
+obj/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# VS Code
+.vscode/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code directories
+.vscode/
+
+# Blazor specific ignores
+/wwwroot/dist
+/wwwroot/js
+/wwwroot/css
+/ServiceWorker.js
+/wwwroot/_content
+
+# Optional: Ignore publish output
+/publish
+
+# Ignore environment specific configuration
+appsettings.*.json
+
+# Environment variables
+.env

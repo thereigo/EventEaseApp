@@ -1,0 +1,11 @@
+﻿@page "/events"
+@using EventEaseApp.Data
+@using EventEaseApp.Models
+@using EventEaseApp.Components
+
+<h3>Event List</h3>
+
+@foreach (var eventItem in MockData.Events)
+{
+    <EventCard Event="eventItem" />
+}

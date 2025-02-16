@@ -1,0 +1,164 @@
+﻿@page "/register/{eventName}"
+@using EventEaseApp.Data
+@using EventEaseApp.Models
+@rendermode InteractiveServer
+
+@code {
+    [Parameter]
+    public string EventName { get; set; }
+
+    private EventModel eventDetails;
+    private string participantName;
+    private List<string> registeredParticipants = new List<string>();
+
+    protected override void OnInitialized()
+    {
+        eventDetails = MockData.Events.FirstOrDefault(e => e.Name == EventName);
+    }
+
+    private void Register()
+    {
+        if (!string.IsNullOrEmpty(participantName))
+        {
+            registeredParticipants.Add(participantName);
+            participantName = string.Empty; // Clear the input field
+        }
+    }
+}
+
+@if (eventDetails != null)
+{
+    <div class="event-registration">
+        <h3>Register for @eventDetails.Name</h3>
+        <p>@eventDetails.Date.ToString("MMMM dd, yyyy")</p>
+        <p>@eventDetails.Location</p>
+        <EditForm Model="@this">
+            <div>
+                <label for="participantName">Name:</label>
+                <InputText id="participantName" @bind-Value="participantName" />
+            </div>
+            <div class="event-registration-links">
+                <button type="button" @onclick="Register">Register</button>
+                <a href="/events/@eventDetails.Name">Back to Details</a>
+            </div>
+        </EditForm>
+    </div>
+    @if (registeredParticipants.Count > 0)
+    {
+        <div class="registered-participants">
+            <h4>Registered Participants:</h4>
+            <ul>
+                @foreach (var participant in registeredParticipants)
+                {
+                    <li>@participant</li>
+                }
+            </ul>
+        </div>
+    }
+}
+else
+{
+    <p>Event not found.</p>
+}
+
+<style>
+    .event-registration {
+        background-color: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 16px;
+        margin: 16px 0;
+        transition: transform 0.2s;
+        max-width: 30vw;
+        /* Adjust the width to be shorter */
+    }
+
+    .event-registration:hover {
+        transform: translateY(-4px);
+    }
+
+    .event-registration h3 {
+        margin-top: 0;
+        font-size: 1.5em;
+        color: #333333;
+    }
+
+    .event-registration p {
+        margin: 8px 0;
+        color: #666666;
+    }
+
+    .event-registration-links {
+        display: flex;
+        justify-content: start;
+        margin-top: 16px;
+        gap: 1rem;
+    }
+
+    .event-registration-links a,
+    .event-registration-links button {
+        text-decoration: none;
+        color: #ffffff;
+        background-color: #007bff;
+        padding: 8px 16px;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+        border: none;
+        cursor: pointer;
+    }
+
+    .event-registration-links a:hover,
+    .event-registration-links button:hover {
+        background-color: #0056b3;
+    }
+
+    .event-registration label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333333;
+    }
+
+    .event-registration input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 16px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+    }
+
+    .registered-participants {
+        background-color: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 16px;
+        margin-top: 3rem;
+        transition: transform 0.2s;
+        max-width: 30vw;
+        /* Adjust the width to be shorter */
+    }
+
+    .registered-participants:hover {
+        transform: translateY(-4px);
+    }
+
+    .registered-participants h4 {
+        margin-top: 0;
+        font-size: 1.5em;
+        color: #333333;
+    }
+
+    .registered-participants ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .registered-participants ul li {
+        background-color: #f8f8f8;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+</style>

@@ -1,0 +1,16 @@
+@using EventEaseApp.Models
+
+<div class="event-card">
+    <h3>@Event.Name</h3>
+    <p>@Event.Date.ToString("MMMM dd, yyyy")</p>
+    <p>@Event.Location</p>
+    <div class="event-card-links">
+        <a href="/events/@Event.Name">Details</a>
+        <a href="/register/@Event.Name">Register</a>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventModel Event { get; set; }
+}
