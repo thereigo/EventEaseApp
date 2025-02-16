@@ -2,65 +2,79 @@
 @using EventEaseApp.Data
 @using EventEaseApp.Models
 @rendermode InteractiveServer
+@inject NavigationManager Navigation
 
 @code {
     [Parameter]
     public string EventName { get; set; }
 
     private EventModel eventDetails;
-    private string participantName;
+    private ParticipantModel participant = new ParticipantModel();
     private List<string> registeredParticipants = new List<string>();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         eventDetails = MockData.Events.FirstOrDefault(e => e.Name == EventName);
+        if (eventDetails == null)
+        {
+            Navigation.NavigateTo("/not-found");
+        }
+        else
+        {
+            registeredParticipants = MockData.EventParticipants[EventName].Select(p => p.Name).ToList();
+        }
     }
 
     private void Register()
     {
-        if (!string.IsNullOrEmpty(participantName))
+        if (participant != null && !string.IsNullOrEmpty(participant.Name) &&
+        !registeredParticipants.Contains(participant.Name))
         {
-            registeredParticipants.Add(participantName);
-            participantName = string.Empty; // Clear the input field
+            registeredParticipants.Add(participant.Name);
+            participant = new ParticipantModel(); // Clear the input field
         }
     }
 }
 
 @if (eventDetails != null)
 {
-    <div class="event-registration">
-        <h3>Register for @eventDetails.Name</h3>
-        <p>@eventDetails.Date.ToString("MMMM dd, yyyy")</p>
-        <p>@eventDetails.Location</p>
-        <EditForm Model="@this">
-            <div>
-                <label for="participantName">Name:</label>
-                <InputText id="participantName" @bind-Value="participantName" />
-            </div>
-            <div class="event-registration-links">
-                <button type="button" @onclick="Register">Register</button>
-                <a href="/events/@eventDetails.Name">Back to Details</a>
-            </div>
-        </EditForm>
-    </div>
+        <div class="event-registration">
+            <h3>Register for @eventDetails.Name</h3>
+            <p>@eventDetails.Date.ToString("MMMM dd, yyyy")</p>
+            <p>@eventDetails.Location</p>
+            <EditForm Model="@participant" OnValidSubmit="Register">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div>
+                    <label for="participantName">Name:</label>
+                    <InputText id="participantName" @bind-Value="participant.Name" />
+                    <ValidationMessage For="@(() => participant.Name)" />
+                </div>
+                <div class="event-registration-links">
+                    <button type="submit">Register</button>
+                    <a href="/events/@eventDetails.Name">Back to Details</a>
+                </div>
+            </EditForm>
+        </div>
     @if (registeredParticipants.Count > 0)
     {
-        <div class="registered-participants">
-            <h4>Registered Participants:</h4>
-            <ul>
-                @foreach (var participant in registeredParticipants)
+                <div class="registered-participants">
+                    <h4>Registered Participants: @registeredParticipants.Count</h4>
+                    <ul>
+                @foreach (var participant in registeredParticipants.TakeLast(10))
                 {
-                    <li>@participant</li>
+                                    <li>@participant</li>
                 }
             </ul>
-        </div>
-    }
-}
+                
+                 </div>   
+           }     
+      }      
 else
 {
     <p>Event not found.</p>
 }
-
+    
 <style>
     .event-registration {
         background-color: #ffffff;

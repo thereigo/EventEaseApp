@@ -2,10 +2,116 @@
 @using EventEaseApp.Data
 @using EventEaseApp.Models
 @using EventEaseApp.Components
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
 
-<h3>Event List</h3>
+@code {
+    private int currentPage = 1;
+    private int pageSize = 5;
+    private int totalEvents;
+    private List<EventModel> paginatedEvents;
 
-@foreach (var eventItem in MockData.Events)
-{
-    <EventCard Event="eventItem" />
+    protected override async Task OnInitializedAsync()
+    {
+        if (MockData.Events != null)
+        {
+            totalEvents = MockData.Events.Count;
+            LoadPaginatedData();
+        }
+    }
+
+    private void LoadPaginatedData()
+    {
+        if (MockData.Events != null)
+        {
+            paginatedEvents = MockData.Events
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
+    }
+
+    private void NextPage()
+    {
+        if (currentPage * pageSize < totalEvents)
+        {
+            currentPage++;
+            LoadPaginatedData();
+        }
+    }
+
+    private void PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+            LoadPaginatedData();
+        }
+    }
 }
+
+<div class="event-list-container">
+    <h3>Event List</h3>
+
+    @if (MockData.Events == null || !MockData.Events.Any())
+    {
+        <p>No events found.</p>
+    }
+    else
+    {
+        @foreach (var eventItem in paginatedEvents)
+        {
+            <EventCard Event="eventItem" />
+        }
+
+        <div class="pagination">
+            <button @onclick="PreviousPage" disabled="@(currentPage == 1)">Previous</button>
+            <span>Page @currentPage</span>
+            <button @onclick="NextPage" disabled="@(currentPage* pageSize >= totalEvents)">Next</button>
+        </div>
+    }
+</div>
+
+<style>
+    .event-list-container {
+        background-color: #f9f9f9;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 30vw;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .pagination button {
+        margin: 0 8px;
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .pagination button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+
+    .pagination button:hover:not(:disabled) {
+        background-color: #0056b3;
+    }
+
+    .pagination span {
+        margin: 0 8px;
+        padding: 8px 16px;
+        line-height: 32px;
+    }
+</style>

@@ -1,15 +1,21 @@
 ﻿@page "/events/{eventName}"
 @using EventEaseApp.Data
 @using EventEaseApp.Models
+@inject NavigationManager Navigation
+
 @code {
     [Parameter]
     public string EventName { get; set; }
 
     private EventModel eventDetails;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         eventDetails = MockData.Events.FirstOrDefault(e => e.Name == EventName);
+        if (eventDetails == null)
+        {
+            Navigation.NavigateTo("/not-found");
+        }
     }
 }
 
@@ -20,7 +26,7 @@
         <p>@eventDetails.Date.ToString("MMMM dd, yyyy")</p>
         <p>@eventDetails.Location</p>
         <div class="event-details-links">
-            <a href="/events">Back to List</a>
+            <a href="/events">Back to Events</a>
             <a href="/register/@eventDetails.Name">Register</a>
         </div>
     </div>
