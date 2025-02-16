@@ -45,7 +45,7 @@ jobs:
       #     [IO.File]::WriteAllBytes($certificatePath, $pfx_cert_byte)
 
       - name: Create the app package
-        run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration /t:Publish /p:AppxPackageDir=$env:Wap_Project_Directory/AppPackages /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle
+        run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration
         env:
           Appx_Bundle: Always
           Appx_Bundle_Platforms: "x86|x64"
