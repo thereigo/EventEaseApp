@@ -1,4 +1,5 @@
 using EventEaseApp.Data;
+using Xunit;
 
 namespace EventEaseApp.Tests
 {
