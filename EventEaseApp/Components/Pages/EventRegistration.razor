@@ -1,8 +1,10 @@
 ﻿@page "/register/{eventName}"
 @using EventEaseApp.Data
 @using EventEaseApp.Models
+@using EventEaseApp.Logging 
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
+@inject ILoggingService LoggingService // Inject the logging service
 
 @code {
     [Parameter]
@@ -14,24 +16,38 @@
 
     protected override async Task OnInitializedAsync()
     {
-        eventDetails = MockData.Events.FirstOrDefault(e => e.Name == EventName);
-        if (eventDetails == null)
+        try
         {
-            Navigation.NavigateTo("/not-found");
+            eventDetails = MockData.Events.FirstOrDefault(e => e.Name == EventName);
+            if (eventDetails == null)
+            {
+                Navigation.NavigateTo("/not-found");
+            }
+            else
+            {
+                registeredParticipants = MockData.EventParticipants[EventName].Select(p => p.Name).ToList();
+            }
         }
-        else
+        catch (Exception ex)
         {
-            registeredParticipants = MockData.EventParticipants[EventName].Select(p => p.Name).ToList();
+            LoggingService.LogException(ex, "Error initializing EventRegistration component.");
         }
     }
 
-    private void Register()
+    private async Task Register()
     {
-        if (participant != null && !string.IsNullOrEmpty(participant.Name) &&
-        !registeredParticipants.Contains(participant.Name) && !string.IsNullOrEmpty(participant.Email))
+        try
         {
-            registeredParticipants.Add(participant.Name);
-            participant = new ParticipantModel(); // Clear the input field
+            if (participant != null && !string.IsNullOrEmpty(participant.Name) &&
+            !registeredParticipants.Contains(participant.Name) && !string.IsNullOrEmpty(participant.Email))
+            {
+                registeredParticipants.Add(participant.Name);
+                participant = new ParticipantModel(); // Clear the input field
+            }
+        }
+        catch (Exception ex)
+        {
+            LoggingService.LogException(ex, "Error during event registration.");
         }
     }
 }

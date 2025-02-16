@@ -1,9 +1,13 @@
-@using EventEaseApp.Models
+@using global::EventEaseApp.Models
+@using global::EventEaseApp.Logging 
+@rendermode InteractiveServer
+@inject ILoggingService LoggingService // Inject the logging service
 
 <div class="event-card">
     <h3>@Event.Name</h3>
     <p>@Event.Date.ToString("MMMM dd, yyyy")</p>
     <p>@Event.Location</p>
+    <p>Attendance: @AttendanceCount</p>
     <div class="event-card-links">
         <a href="/events/@Event.Name">Details</a>
         <a href="/register/@Event.Name">Register</a>
@@ -13,4 +17,35 @@
 @code {
     [Parameter]
     public EventModel Event { get; set; }
+
+    [Parameter]
+    public int AttendanceCount { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        try
+        {
+            AttendanceCount = GetAttendanceCount(Event.Id);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            LoggingService.LogException(ex, $"Error setting parameters for EventCard with Event ID: {Event?.Id}");
+        }
+    }
+
+    private int GetAttendanceCount(int eventId)
+    {
+        try
+        {
+            Random random = new Random();
+            int randomViewers = random.Next(0, 10); // Generates a random number between 0 and 9
+            return Math.Max(Event.RegisteredParticipants, Event.RegisteredParticipants + randomViewers);
+        }
+        catch (Exception ex)
+        {
+            LoggingService.LogException(ex, $"Error getting attendance count for Event ID: {eventId}");
+            return 0; // Return a default value in case of an error
+        }
+    }
 }

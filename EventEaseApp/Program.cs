@@ -1,4 +1,5 @@
 using EventEaseApp.Components;
+using EventEaseApp.Logging; // Add this using statement
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,9 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true; // Make the cookie essential
 });
+
+// Register LoggingService
+builder.Services.AddSingleton<ILoggingService, LoggingService>();
 
 var app = builder.Build();
 

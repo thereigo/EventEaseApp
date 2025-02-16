@@ -19,9 +19,11 @@ namespace EventEaseApp.Data
             {
                 events.Add(new EventModel
                 {
+                    Id = i,
                     Name = $"{eventNames[random.Next(eventNames.Length)]} {i}",
                     Date = DateTime.Now.AddDays(random.Next(1, 365)),
-                    Location = locations[random.Next(locations.Length)]
+                    Location = locations[random.Next(locations.Length)],
+                    RegisteredParticipants = random.Next(0, 50) // Assign a random number of registered participants
                 });
             }
             return events;

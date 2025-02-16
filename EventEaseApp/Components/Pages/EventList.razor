@@ -2,8 +2,10 @@
 @using EventEaseApp.Data
 @using EventEaseApp.Models
 @using EventEaseApp.Components
+@using EventEaseApp.Logging
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
+@inject ILoggingService LoggingService // Inject the logging service
 
 @code {
     private int currentPage = 1;
@@ -13,21 +15,35 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (MockData.Events != null)
+        try
         {
-            totalEvents = MockData.Events.Count;
-            LoadPaginatedData();
+            if (MockData.Events != null)
+            {
+                totalEvents = MockData.Events.Count;
+                LoadPaginatedData();
+            }
+        }
+        catch (Exception ex)
+        {
+            LoggingService.LogException(ex, "Error initializing EventList component.");
         }
     }
 
     private void LoadPaginatedData()
     {
-        if (MockData.Events != null)
+        try
         {
-            paginatedEvents = MockData.Events
+            if (MockData.Events != null)
+            {
+                paginatedEvents = MockData.Events
                 .Skip((currentPage - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            LoggingService.LogException(ex, "Error loading paginated data in EventList component.");
         }
     }
 
