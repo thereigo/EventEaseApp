@@ -6,6 +6,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Add HttpContextAccessor service
+builder.Services.AddHttpContextAccessor();
+
+// Add session services
+builder.Services.AddDistributedMemoryCache(); // Use in-memory cache for session
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // You can configure the session timeout
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true; // Make the cookie essential
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -18,10 +30,15 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
+
+app.UseRouting(); // Make sure routing is enabled
 
 app.UseAntiforgery();
 
-app.MapStaticAssets();
+// Add session middleware
+app.UseSession();
+
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
